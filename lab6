@@ -1,0 +1,32 @@
+-- 1)
+-- a
+select * from dealer cross join client;
+
+-- b
+select * from sell inner join;
+
+
+-- c
+select dealer.name, client.name from dealer inner join  client on dealer.location = client.city;
+
+-- d
+select sell.id, amount, name, city from sell inner join client on sell.client_id = client.id where sell.amount between 100 and 500;
+
+-- e
+select distinct dealer.name from dealer  left join client  on dealer.id = client.dealer_id;
+
+-- f
+select  client.name, city, dealer.name, dealer.charge from dealer  right join client on dealer.id = client.dealer_id;
+
+-- g
+select client.name,  client.city, dealer.name, dealer.charge from dealer left join client on dealer.id = client.dealer_id where dealer.charge > 0.12;
+
+-- h
+select client.name, client.city, sell.id, sell.amount, dealer.name, dealer.charge
+from dealer  full outer join client  on dealer.id = client.dealer_id
+    full outer join sell on dealer.id = sell.dealer_id;
+    
+-- i
+
+
+2)
