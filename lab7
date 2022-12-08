@@ -1,0 +1,130 @@
+--1)
+--a
+create function inc(a integer)
+ returns
+     integer as $$
+    begin
+    return a + 1;
+    end; $$
+    language plpgsql;
+
+select inc(2);
+
+--b
+create function plus(a integer, b integer)
+ returns
+     integer as $$
+    begin
+    return a + b;
+    end; $$
+    language plpgsql;
+
+select plus(2, 3);
+
+--c
+create function booool(a integer)
+ returns bool as $$
+    begin
+    return case  when a % 2 = 0 then true
+        else false
+       end;
+    end; $$
+    language plpgsql;
+
+select booool(5);
+
+--d
+create or replace function chek(a varchar)
+ returns bool as
+    $$
+    declare password varchar := '123';
+    begin
+    return case  when password = a then true
+        else false
+       end;
+    end; $$
+    language plpgsql;
+
+select chek('123');
+
+--e
+create function two_out(a int, out b int, out c int) as
+    $$
+    begin
+           b := a / 2;
+           c := a * 2;
+    end; $$
+    language plpgsql;
+
+drop function two_out;
+
+
+select * from two_out(100);
+
+--2)
+--a
+create table lab2_a(
+    city varchar,
+    current__time timestamp,
+    undate_time timestamp
+);
+
+create or replace function time_update_fun()
+returns trigger as
+    $$
+    declare
+        t timestamp;
+    begin
+        t = current_timestamp;
+        new.undate_time = t;
+        return new;
+    end;
+    $$
+language plpgsql;
+
+create or replace trigger time_update_trig
+    before update
+    on lab2_a
+    for each row
+    execute procedure time_update_fun();
+
+insert into lab2_a(city,current__time)
+values('Almaty', current_timestamp);
+
+select * from lab2_a;
+
+update lab2_a
+set city = 'Astana'
+where city = 'Almaty';
+
+select * from lab2_a;
+
+--b
+create table lab2_b(
+    name varchar,
+    year  int,
+    age int
+);
+
+create or replace function age_cal_fun()
+returns trigger as
+    $$
+    declare
+        y int;
+    begin
+        y = 2022-new.year;
+        new.age = y;
+        return new;
+    end;
+    $$
+language plpgsql;
+
+create or replace trigger age_cal_trig
+    before insert
+    on lab2_b
+    for each row
+    execute procedure age_cal_fun();
+
+insert into lab2_b(name, year)
+values ('Marat', 2003);
+select * from lab2_b;
